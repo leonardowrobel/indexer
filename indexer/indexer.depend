@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1698711000 source:c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\main.c
+	<stdio.h>
+	<stdlib.h>
+
