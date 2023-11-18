@@ -1,11 +1,13 @@
 # depslib dependency file v1.0
-1700228953 source:c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\main.c
+1700334975 source:c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\main.c
 	<stdio.h>
 	<stdlib.h>
+	<ctype.h>
+	"hashmap.h"
 	"word.h"
 	"file_operations.h"
 
-1699305978 c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\word.h
+1700331782 c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\word.h
 
 1699307478 source:c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\hashmap.c
 	<stdio.h>
@@ -26,9 +28,7 @@
 	<stddef.h>
 	<stdint.h>
 
-1700229014 source:c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\word.c
-	<stdio.h>
-	"word.h"
+1700312159 source:c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\word.c
 
 1700228935 c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\file_operations.h
 
