@@ -1,128 +1,58 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
-typedef struct t_word
-{
-    char* value;
-    struct t_word* next;
-} word;
+#include "word.h"
+#include "file_operations.h"
 
-word* create(char* value)
+int main(int argc, char const *argv[])
 {
-    word* newWord = (word*) malloc(sizeof(word));
-    newWord->value = value;
-    return newWord;
-    return NULL;
-}
+    FILE *file = getFile(argc, argv);
+    printf("Argument: %s\n", argv[1]);
 
-void put(word** head, char* value)
-{
-    if(*head == NULL)
+    // --freq N ARQUIVO
+    if (0 == strcmp(argv[1], "--freq"))
     {
-        word* newWord = create(value);
-        newWord ->next = NULL;
-        *head = newWord ;
+        printf("FREQ\n");
     }
-    else
+
+    // --freq-word
+    if (0 == strcmp(argv[1], "--freq-word"))
     {
-
-        word* w = *head;
-        while(w->next != NULL)
-        {
-            w = w->next;
-        };
-
-        word* newWord = create(value);
-        newWord ->next = NULL;
-        w->next = newWord ;
-
+        printf("FREQ-WORD\n");
+        // do something
     }
-}
 
-void print_list(word* head)
-{
-    if(head == NULL)
+    // --search
+    if (0 == strcmp(argv[1], "--search "))
     {
-        printf("==============================\n");
-        printf("List is empty!\n");
-        printf("==============================\n");
+        printf("SEARCH\n");
+        // do something
     }
-    else
-    {
-        word* w = head;
-        printf("==============================\n");
-        while(w->next != NULL)
-        {
-            printf("%s", w->value);
-            w = w->next;
-        };
-        printf("%s", w->value);
-        printf("\n");
-    }
-};
 
-// TODO:
-char* get(word* head, word key)
-{
-    if(head != NULL)
+
+    int c, count = 0;
+    char word[50];
+    while ((c = fgetc(file)) != EOF)
     {
-        word* w = head;
-        while( w != NULL)
-        {
-//            if(time_cmp(&c->key, &key) == 0)
-            {
-//                return c->value;
+        if(!isalpha(c) || count > 48){
+            word[count] = '\0';
+            if(strlen(word)>2){ // word is valid
+                printf("- %s \n", word);
             }
-//            c = c->next;
+                word[0] = '\0';
+                count = 0;
+        }else {
+            word[count] = tolower(c);
+            count++;
         }
-        return 0;
     }
-}
-
-
-int main()
-{
-    printf("POC 1 - read file.\n");
-    // Need to create file pointer
-    FILE *fptr;
-    int MAX_TEXT_SIZE = 100;
-
-    word* list = NULL;
-
-    // In C, you can create, open, read, and write to files by declaring a pointer of type FILE, and use the fopen() function:
-    fptr = fopen("text4testing.txt", "r");
-
-    char myText[MAX_TEXT_SIZE];
-
-//    while(fgets(myText, MAX_TEXT_SIZE, fptr)/* This function only saves the first line*/){
-//        printf("%s", myText);
-//    }
-
-    char ch;
-    char newWord[MAX_TEXT_SIZE];
-    int c = 0;
-    while ((ch = fgetc(fptr)) != EOF)
-    {
-//        printf("ch = %i\n", ch);
-        if(ch == 10 || ch == 32)
-        {
-            c = -1;
-            printf("%s\n", newWord);
-        }
-        else
-        {
-//            printf("else\n");
-            newWord[c] = ch;
-            newWord[c+1] = '\n';
-        }
-        c++;
-//        printf("Read = %c - ASCII: %i\n", ch, ch);
-        printf("\n");
-    }
-
-
-    fclose(fptr);
-
+    fclose(file);
     printf("End of the program.\n");
     return 0;
 }
+
+/*
+REF:
+https://codereview.stackexchange.com/questions/166085/creating-index-to-a-file-in-c
+*/
