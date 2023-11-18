@@ -7,7 +7,7 @@
 	"word.h"
 	"file_operations.h"
 
-1700331782 c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\word.h
+1700339965 c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\word.h
 
 1699307478 source:c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\hashmap.c
 	<stdio.h>
@@ -32,7 +32,7 @@
 
 1700228935 c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\file_operations.h
 
-1700228979 source:c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\file_operations.c
+1700337952 source:c:\users\leona\desktop\ufpr-2\ds143-estruturas_de_dados_ii\repo\indexer\indexer\file_operations.c
 	<stdio.h>
 	"word.h"
 

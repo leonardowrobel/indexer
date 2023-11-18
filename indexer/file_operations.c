@@ -6,12 +6,6 @@ FILE *getFile (int argc, char const *argv[])
 {
     FILE *theinput;
 
-    if (argc < 3)
-    {
-        fprintf(stderr, "There must be at least three arguments!\n");
-        exit(1);
-    }
-
     theinput = fopen(argv[3], "r");
 
     if (!theinput)

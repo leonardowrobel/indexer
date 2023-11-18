@@ -3,7 +3,7 @@
 
 typedef struct word {
     char* value;
-    int occorrences;
+    int occurrences;
 } word;
 
 #endif // WORD_H_INCLUDED
