@@ -40,12 +40,13 @@ void validateArgs(int argc, char const *argv[])
     }
 }
 
+/*
 void insert(word* words, word new_word,int max_length){
     int i, k;
 
     int words_length = sizeof(words) / sizeof(word);
     if(words_length == 0){
-        (*words)[words_length++] = new_word;
+//         (*words)[words_length++] = new_word;
     } else if(words_length < max_length){//need this check
         //x->length = x->length + 1;//Do not increment before the loop. because x->numbers[i] occurs out of bounds
         int words_i_occurrence;
@@ -63,7 +64,7 @@ void insert(word* words, word new_word,int max_length){
         words_length++;
     }
 }
-
+*/
 int main(int argc, char const *argv[])
 {
     validateArgs(argc, argv);
@@ -102,19 +103,6 @@ int main(int argc, char const *argv[])
                     {
                         .value=text_to_add, .occurrences=1
                     });
-
-//                    node* this_node = get_node(root, 1);
-//                    if(this_node == NULL){
-//                        node *new_node = create_new_node(1);
-//                        push_new_item(new_node, text_to_add);
-//                        root = insert_node(root, new_node);
-//                    /*
-//                        fixup(root, new_node);
-//                        root->color = BLACK;
-//                    */
-//                    } else {
-//                        push_new_item(this_node->words, create_new_item(text_to_add));
-//                    }
                 }
                 else // Word already exists
                 {
@@ -123,26 +111,6 @@ int main(int argc, char const *argv[])
                     {
                         .value=text_to_add, .occurrences= word_occurrences
                     });
-
-                    // TREE part
-                    /*
-                    // remove from old node
-                    node* old_node = get_node(root, get_word->occurrences);
-                    delete_item_by_key(old_node, text_to_add);
-
-                    node* new_node = get_node(root, word_occurrences);
-                    if(new_node == NULL)
-                    {
-                        new_node = create_new_node(word_occurrences);
-                        push_new_item(new_node->words, create_new_item(text_to_add));
-                        root = insert_node(root, new_node);
-                        fixup(root, new_node);
-                        root->color = BLACK;
-                    }
-                    else {
-                        push_new_item(new_node->words, create_new_item(text_to_add));
-                    }
-                    */
                 }
                 word_count++;
             }
@@ -182,41 +150,9 @@ int main(int argc, char const *argv[])
             {
                 .value=text_to_add, .occurrences= word_occurrences
             });
-//            if(!exists(root, word_occurrences))
-//                    {
-//                        node *new_node = create_new_node(word_occurrences);
-//                        root = insert_node(root, new_node);
-//                        fixup(root, new_node);
-//                        root->color = BLACK;
-//                    }
             word_count++;
         }
     };
-
-
-
-
-
-    printf("RB BS-Tree\n");
-    // RB BS-Tree
-    // Testing
-//    int n = 11;
-//    int a[11] = { 7, 6, 5, 4, 3, 0, 7 , 8, 11, 45, 12};
-//
-//    for (int i = 0; i < n; i++)
-//    {
-//        node *new_node = create_new_node(a[i]);
-//        // printf("-%d \n", new_node->occurrences);
-//        root = insert_node(root, new_node);
-//        fixup(root, new_node);
-//        root->color = BLACK;
-//    }
-
-    // Testing
-    int test_find = 3;
-    node *node_to_find = search_occurrence(root, test_find);
-    printf("%d was %s\n", test_find, node_to_find == NULL ? "not found" : "found");
-    in_order(root);
 
     // ===================================================================================================
 
@@ -272,7 +208,6 @@ int main(int argc, char const *argv[])
 
     // ===================================================================================================
     // Clear everything and get the hell out of here!
-    deallocate(root);
     hashmap_free(map);
     fclose(file);
     printf("This is the end!\n");
