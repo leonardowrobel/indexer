@@ -1,4 +1,4 @@
 um 
-dois tres 
-quatro dois tres
-quatro tres quatro quatro
+dois  
+quatro dois 
+quatro  quatro quatro

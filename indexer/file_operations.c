@@ -14,5 +14,13 @@ FILE *getFile (int argc, char const *argv[])
         exit(1);
     }
 
+    if(0 == strcmp(argv[1], "--freq")){
+        int qtd = atoi(argv[2]);
+        if(qtd < 1 || qtd > 256){
+            fprintf(stderr, "Quantity '%d' of words is invalid.\n", qtd);
+            exit(1);
+        }
+    }
+
     return theinput;
 }
