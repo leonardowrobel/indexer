@@ -40,31 +40,13 @@ void validateArgs(int argc, char const *argv[])
     }
 }
 
-/*
-void insert(word* words, word new_word,int max_length){
-    int i, k;
-
-    int words_length = sizeof(words) / sizeof(word);
-    if(words_length == 0){
-//         (*words)[words_length++] = new_word;
-    } else if(words_length < max_length){//need this check
-        //x->length = x->length + 1;//Do not increment before the loop. because x->numbers[i] occurs out of bounds
-        int words_i_occurrence;
-        for(i = 0; i < words_length; i++){   //descending order
-            words_i_occurrence = (*words)[i]->occurrences;
-            if(*((*words)[i])->occurrences < new_word->occurrences){//descending order
-                //insert position is i
-                for(k = words_length-1; k >= i; k--){//k > i --> k >= i
-                    (*words)[k+1] = (*words)[k];
-                }
-                break;//exit loop
-            }
-        }
-        (*words)[i] = new_word;
-        words_length++;
-    }
+int cmpfunc (const void * a, const void * b)
+{
+    word word_a = *(word*)a;
+    word word_b = *(word*)b;
+    return ( word_a.occurrences - word_b.occurrences);
 }
-*/
+
 int main(int argc, char const *argv[])
 {
     validateArgs(argc, argv);
@@ -79,98 +61,163 @@ int main(int argc, char const *argv[])
     int c, count = 0;
     char new_word[50];
     memset(new_word, '\0', sizeof(new_word));
-    int array_length = atoi(argv[2]);
-    word* words[array_length];
+
+    int array_length = 1;
+    if(0 == strcmp(argv[1], "--freq"))
+    {
+        array_length = atoi(argv[2]);
+    }
+    int array_elements_qtd = 0;
+    word word_counter[array_length];
+    int found = 0;
+    size_t word_size = sizeof(word);
 
     printf("Processing\n");
-    while ((c = fgetc(file)) != EOF)
+
+    if(0 != strcmp(argv[1], "--search"))
     {
-        if(!isalpha(c) || count > 47)
+
+
+        while (1)
         {
-            new_word[count] = '\0';
-            if(strlen(new_word)>2)  // word is valid
+            c = fgetc(file);
+            if(!isalpha(c) || count > 47)
             {
-                char *text_to_add = malloc(count+1);
-                strcpy(text_to_add,new_word);
-                // printf("Adding %s\n", text_to_add);
-                get_word = hashmap_get(map, &(word)
+                new_word[count] = '\0';
+                if(strlen(new_word)>2)  // word is valid
                 {
-                    .value=new_word
-                });
-                if(get_word == NULL) // NEW WORD
-                {
-                    hashmap_set(map, &(word)
+                    char *text_to_add = malloc(count+1);
+                    strcpy(text_to_add,new_word);
+                    // printf("Adding %s\n", text_to_add);
+                    get_word = hashmap_get(map, &(word)
                     {
-                        .value=text_to_add, .occurrences=1
+                        .value=new_word
                     });
-                }
-                else // Word already exists
-                {
-                    int word_occurrences = get_word->occurrences + 1;
-                    hashmap_set(map, &(word)
+                    if(get_word == NULL) // NEW WORD
                     {
-                        .value=text_to_add, .occurrences= word_occurrences
-                    });
+                        hashmap_set(map, &(word)
+                        {
+                            .value=text_to_add, .occurrences=1
+                        });
+                        // WordCounter
+                        // printf("New word %s\n", text_to_add);
+                        if(array_elements_qtd == 0)
+                        {
+                            word_counter[array_elements_qtd].occurrences = 1;
+                            word_counter[array_elements_qtd].value= text_to_add;
+                            // printf("Adding new word on empty list %s %d\n",word_counter[array_elements_qtd].value, word_counter[array_elements_qtd].occurrences);
+                            array_elements_qtd++;
+                            qsort(word_counter, array_elements_qtd, word_size, cmpfunc);
+                        }
+                        else if(array_elements_qtd < array_length)
+                        {
+                            word_counter[array_elements_qtd].occurrences = 1;
+                            word_counter[array_elements_qtd].value= text_to_add;
+                            // printf("Adding new word on list %s %d\n",word_counter[array_elements_qtd].value, word_counter[array_elements_qtd].occurrences);
+                            array_elements_qtd++;
+                            qsort(word_counter, array_elements_qtd, word_size, cmpfunc);
+                        }
+                        else
+                        {
+                            /*
+                            printf("List is full [%d/%d]", array_elements_qtd, array_length);
+                            printf("new word %s occours %d times, less than or equal than %s :%d\n",
+                            text_to_add, 1, word_counter[0].value, word_counter[0].occurrences);
+                            */
+                        }
+                    }
+                    else // Word already exists
+                    {
+                        int word_occurrences = get_word->occurrences + 1;
+                        hashmap_set(map, &(word)
+                        {
+                            .value=text_to_add, .occurrences= word_occurrences
+                        });
+                        // WordCounter
+                        // printf("Word %s exists\n", text_to_add);
+                        // Lista não tá cheia, só busca e substitui, pois apalavra já existe
+                        if(array_elements_qtd < array_length)
+                        {
+                            // printf("List is not full %d/%d\n", array_elements_qtd, array_length);
+                            for(int count = 0 ; count < array_elements_qtd ; count++)
+                            {
+                                if(strcmp(word_counter[count].value, text_to_add) == 0)
+                                {
+                                    word_counter[count].occurrences = word_occurrences;
+                                    // printf("Updating word %s %d in a not full list\n",word_counter[count].value, word_counter[count].occurrences);
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // printf("List is full %d/%d\n", array_elements_qtd, array_length);
+                            // Lista tá cheia, verifica se o ultimo elemento tem menos que o atual, se não só ignora
+                            // ai pode ser um item que já existe E busca e substitui
+                            //, ou pode ser um novo item, ai removemos o ultimo e inserimos no lugar
+                            if(word_counter[0].occurrences < word_occurrences)
+                            {
+                                for(int count = 0 ; count < array_elements_qtd ; count++)
+                                {
+                                    if(strcmp(word_counter[count].value, text_to_add) == 0)
+                                    {
+                                        found = count;
+                                        break;
+                                    }
+                                }
+                                if(found)
+                                {
+                                    word_counter[found].occurrences = word_occurrences;
+                                    // printf("Updating word %s %d\n in a full list",word_counter[found].value, word_counter[found].occurrences);
+                                }
+                                else
+                                {
+                                    word_counter[0].occurrences = word_occurrences;
+                                    word_counter[0].value= text_to_add;
+                                    // printf("replacing first word %s %d\n in a full list",word_counter[0].value, word_counter[0].occurrences);
+                                }
+                                found = 0;
+                                qsort(word_counter, array_elements_qtd, word_size, cmpfunc);
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                    }
                 }
                 word_count++;
+                // TODO: Quick sort array
+                // Reset word builder
+                memset(new_word, '\0', sizeof(new_word));
+                count = 0;
             }
-            // Reset word builder
-            memset(new_word, '\0', sizeof(new_word));
-            count = 0;
-        }
-        else
-        {
-            new_word[count] = tolower(c);
-            count++;
-        }
-    };
-    // The last word is ignored
-    new_word[count] = '\0';
-    if(strlen(new_word)>2)
-    {
-        char *text_to_add = malloc(count+1);
-        strcpy(text_to_add,new_word);
-        // printf("Adding %s\n", text_to_add);
-        get_word = hashmap_get(map, &(word)
-        {
-            .value=new_word
-        });
-        if(get_word == NULL) // New word
-        {
-            hashmap_set(map, &(word)
+            else
             {
-                .value=text_to_add, .occurrences=1
-            });
+                new_word[count] = tolower(c);
+                count++;
+            }
+            if((c) == EOF)
+            {
+                break;
+            }
+        };
+    }
 
-        }
-        else
-        {
-            int word_occurrences = get_word->occurrences + 1;
-            hashmap_set(map, &(word)
-            {
-                .value=text_to_add, .occurrences= word_occurrences
-            });
-            word_count++;
-        }
-    };
 
     // ===================================================================================================
-
     // OPERATIONS
-    // --freq N ARQUIVO
+    // --freq N ARQUIVO [WORKING]
     printf("\n");
     if (0 == strcmp(argv[1], "--freq"))
     {
-
-
-
-
-
-
-//        printf("FREQ\n");
-
+        printf("Printing most frequent words:\n");
+        for(int count = 0 ; count < array_elements_qtd ; count++)
+        {
+            printf("%s QTD: %d\n", word_counter[count].value, word_counter[count].occurrences);
+        }
     }
-    // --freq-word [WORKING]
+    // --freq-word WORD [WORKING]
     if (0 == strcmp(argv[1], "--freq-word"))
     {
         // Exibe o número de ocorrências de PALAVRA em ARQUIVO.
@@ -187,33 +234,29 @@ int main(int argc, char const *argv[])
         {
             printf("The word \"%s\" appears %d times in this file.\n", get_word->value, get_word->occurrences);
         }
-        // do something
     }
     // --search
     if (0 == strcmp(argv[1], "--search "))
     {
-//        printf("SEARCH\n");
-        // do something
+
     }
 
     // For iteration porpouses
-//    printf("\nNumber of words on hashmap: %lu\n", hashmap_count(map));
-//    size_t iter = 0;
-//    void *item;
-//    while (hashmap_iter(map, &iter, &item))
-//    {
-//        word *iter_word = item;
-//        printf("- %s :%d\n", iter_word->value, iter_word->occurrences);
-//    }
+    // printf("\nNumber of words on hashmap: %lu\n", hashmap_count(map));
+    // size_t iter = 0;
+    // void *item;
+    // while (hashmap_iter(map, &iter, &item))
+    // {
+    //     word *iter_word = item;
+    //     printf("- %s :%d\n", iter_word->value, iter_word->occurrences);
+    // }
 
-    // ===================================================================================================
     // Clear everything and get the hell out of here!
     hashmap_free(map);
     fclose(file);
-    printf("This is the end!\n");
+    printf("\nThis is the end!\n");
     return 0;
 }
-
 
 /*
 REF:
@@ -226,4 +269,8 @@ https://www.educative.io/answers/resolving-the-dereferencing-pointer-to-incomple
 https://stackoverflow.com/questions/2700646/dereferencing-pointer-to-incomplete-type
 https://stackoverflow.com/questions/20120833/how-do-i-refer-to-a-typedef-in-a-header-file
 https://stackoverflow.com/questions/5547131/c-question-const-void-vs-void
+https://www.geeksforgeeks.org/comparator-function-of-qsort-in-c/
+https://cplusplus.com/reference/cstdlib/qsort/
+https://www.tutorialspoint.com/c_standard_library/c_function_qsort.htm
+https://stackoverflow.com/questions/27284185/how-does-the-compare-function-in-qsort-work
 */

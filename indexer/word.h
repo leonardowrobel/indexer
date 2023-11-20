@@ -6,4 +6,10 @@ typedef struct word {
     int occurrences;
 } word;
 
+//typedef struct words {
+//    word *words_list;
+//    int words_length;
+//    int words_max_length;
+//} words;
+
 #endif // WORD_H_INCLUDED

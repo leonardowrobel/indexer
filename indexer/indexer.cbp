@@ -11,6 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="--freq-word jersey 101.txt" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -31,6 +32,14 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="file_operations.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="file_operations.h" />
+		<Unit filename="hashmap.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="hashmap.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
