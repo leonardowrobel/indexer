@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <math.h>
 
 #include "hashmap.h"
 
@@ -50,8 +51,7 @@ int cmpfunc (const void * a, const void * b)
 int main(int argc, char const *argv[])
 {
     validateArgs(argc, argv);
-
-    FILE *file = getFile(argc, argv);
+    FILE *file;
 
     // HASHMAP
     struct hashmap *map = hashmap_new(sizeof(word), 0, 0, 0, word_hash, word_compare, NULL, NULL);
@@ -72,12 +72,11 @@ int main(int argc, char const *argv[])
     int found = 0;
     size_t word_size = sizeof(word);
 
-    printf("Processing\n");
 
     if(0 != strcmp(argv[1], "--search"))
     {
-
-
+        printf("Processing\n");
+        file = getFile(argc, argv);
         while (1)
         {
             c = fgetc(file);
@@ -204,11 +203,10 @@ int main(int argc, char const *argv[])
         };
     }
 
-
     // ===================================================================================================
     // OPERATIONS
     // --freq N ARQUIVO [WORKING]
-    printf("\n");
+    printf("Selecting operation\n");
     if (0 == strcmp(argv[1], "--freq"))
     {
         printf("Printing most frequent words:\n");
@@ -236,9 +234,79 @@ int main(int argc, char const *argv[])
         }
     }
     // --search
-    if (0 == strcmp(argv[1], "--search "))
+    if (0 == strcmp(argv[1], "--search"))
     {
+        int files_qtd = argc - 3;
+        int files_containing_word = 0;
+        file_search_word files_to_search[files_qtd];
 
+        int c, char_count = 0;
+        char word_builder[50];
+        memset(word_builder, '\0', sizeof(word_builder)); // Reset word builder
+        for(int counter = 0; counter < files_qtd ; counter++)
+        {
+            files_to_search[counter].file_name = argv[counter+3];
+            files_to_search[counter].word = argv[2];
+            files_to_search[counter].file_total_words = 0;
+            files_to_search[counter].word_occurrences = 0;
+
+            FILE *file = fopen(files_to_search[counter].file_name, "r");
+            char *word_to_search = tolower(argv[2]);
+
+            unsigned long freq_word = 0;
+            unsigned long total_words = 0;
+            while (1)
+            {
+                c = fgetc(file);
+                if(!isalpha(c) || char_count > 47)
+                {
+                    word_builder[char_count] = '\0';
+                    if(strlen(word_builder)>2)  // word is valid
+                    {
+                        if(strcmp(word_builder, word_to_search) == 0)
+                        {
+                            freq_word++;
+                        }
+                    }
+                    memset(word_builder, '\0', sizeof(word_builder)); // Reset word builder
+                    char_count = 0;
+                    total_words++;
+                }
+                else
+                {
+                    word_builder[char_count] = tolower(c);
+                    char_count++;
+                }
+                if((c) == EOF)
+                {
+                    break;
+                }
+            }
+            if(freq_word > 0){
+                files_containing_word++;
+            }
+            files_to_search[counter].file_total_words = total_words;
+            files_to_search[counter].word_occurrences = freq_word;
+            if(freq_word != 0 && total_words != 0){
+                files_to_search[counter].term_frequency = (float)freq_word/(float)total_words;
+            } else {
+                files_to_search[counter].term_frequency = 0;
+            }
+            printf("File: %s | %s (%d)", files_to_search[counter].file_name, files_to_search[counter].word, files_to_search[counter].word_occurrences);
+            printf("| Tot: %u | TF: %f\n", files_to_search[counter].file_total_words, files_to_search[counter].term_frequency);
+        }
+
+        // Calculate IDF
+        double doc_qtd_doc_qtd_word = (double)files_qtd / (double)files_containing_word;
+        printf("doc_qtd_doc_qtd_word: %f\n", doc_qtd_doc_qtd_word);
+        double idf = log10(doc_qtd_doc_qtd_word);
+        printf("idf: %f\n", idf);
+
+        for(int counter = 0; counter < files_qtd ; counter++)
+        {
+            files_to_search[counter].tfidf= (double)files_to_search[counter].term_frequency * idf;
+            printf("%s | TFIDF: %f\n", files_to_search[counter].file_name, files_to_search[counter].tfidf);
+        }
     }
 
     // For iteration porpouses
