@@ -219,7 +219,10 @@ int main(int argc, char const *argv[])
     if (0 == strcmp(argv[1], "--freq-word"))
     {
         // Exibe o número de ocorrências de PALAVRA em ARQUIVO.
-        char *occurring_word = tolower(argv[2]);
+        char occurring_word[50];
+        strcpy(occurring_word, argv[2]);
+        tolower(occurring_word);
+        // char *occurring_word = tolower(argv[2]);
         get_word = hashmap_get(map, &(word)
         {
             .value=occurring_word
@@ -251,7 +254,11 @@ int main(int argc, char const *argv[])
             files_to_search[counter].word_occurrences = 0;
 
             FILE *file = fopen(files_to_search[counter].file_name, "r");
-            char *word_to_search = tolower(argv[2]);
+
+            char occurring_word[50];
+        strcpy(occurring_word, argv[2]);
+        tolower(occurring_word);
+//            char *word_to_search = tolower(argv[2]);
 
             unsigned long freq_word = 0;
             unsigned long total_words = 0;
@@ -263,7 +270,7 @@ int main(int argc, char const *argv[])
                     word_builder[char_count] = '\0';
                     if(strlen(word_builder)>2)  // word is valid
                     {
-                        if(strcmp(word_builder, word_to_search) == 0)
+                        if(strcmp(word_builder, occurring_word) == 0)
                         {
                             freq_word++;
                         }
@@ -279,6 +286,7 @@ int main(int argc, char const *argv[])
                 }
                 if((c) == EOF)
                 {
+
                     break;
                 }
             }
