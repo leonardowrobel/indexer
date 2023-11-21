@@ -201,6 +201,7 @@ int main(int argc, char const *argv[])
                 break;
             }
         };
+        fclose(file);
     }
 
     // ===================================================================================================
@@ -256,9 +257,9 @@ int main(int argc, char const *argv[])
             FILE *file = fopen(files_to_search[counter].file_name, "r");
 
             char occurring_word[50];
-        strcpy(occurring_word, argv[2]);
-        tolower(occurring_word);
-//            char *word_to_search = tolower(argv[2]);
+            strcpy(occurring_word, argv[2]);
+            tolower(occurring_word);
+            // char *word_to_search = tolower(argv[2]);
 
             unsigned long freq_word = 0;
             unsigned long total_words = 0;
@@ -302,6 +303,7 @@ int main(int argc, char const *argv[])
             }
             printf("File: %s | %s (%d)", files_to_search[counter].file_name, files_to_search[counter].word, files_to_search[counter].word_occurrences);
             printf("| Tot: %u | TF: %f\n", files_to_search[counter].file_total_words, files_to_search[counter].term_frequency);
+            fclose(file);
         }
 
         // Calculate IDF
@@ -329,7 +331,7 @@ int main(int argc, char const *argv[])
 
     // Clear everything and get the hell out of here!
     hashmap_free(map);
-    fclose(file);
+    // fclose(file);
     printf("\nThis is the end!\n");
     return 0;
 }
@@ -349,4 +351,8 @@ https://www.geeksforgeeks.org/comparator-function-of-qsort-in-c/
 https://cplusplus.com/reference/cstdlib/qsort/
 https://www.tutorialspoint.com/c_standard_library/c_function_qsort.htm
 https://stackoverflow.com/questions/27284185/how-does-the-compare-function-in-qsort-work
+https://stackoverflow.com/questions/11554262/converting-char-to-lower-case-throws-segfault-error
+https://www.tutorialspoint.com/c_standard_library/c_function_log10.htm
+https://stackoverflow.com/questions/9457225/codeblocks-verbose-build
+https://www.geeksforgeeks.org/gcc-command-in-linux-with-examples/
 */
